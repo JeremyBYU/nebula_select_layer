@@ -1,0 +1,21 @@
+{
+    "name": "pydeck-nebulajs",
+    "version": "0.0.1",
+    "description": "Creates a nebulajs selection layer bundle",
+    "main": "dist/bundle.js",
+    "license": "MIT",
+    "dependencies": {
+        "@turf/turf": "^6.5.0",
+        "viewport-mercator-project": "^7.0.4"
+    },
+    "devDependencies": {
+        "esbuild": "0.19.5"
+    },
+    "scripts": {
+        "start": "npm install",
+        "build": "rm -rf dist && mkdir dist && esbuild index.js --bundle --outfile=dist/bundle.js"
+    },
+    "resolutions": {
+        "@turf/difference": "6.0.1"
+    }
+}
