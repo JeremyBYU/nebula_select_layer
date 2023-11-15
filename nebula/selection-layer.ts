@@ -78,10 +78,12 @@ export class SelectionLayer<DataT, ExtraPropsT> extends CompositeLayer<
       if(ev.key == "r" && !ev.repeat)
       {
         // this is not working...
-        this.setState(prevState => ({
-          ...prevState,
-          mode: DrawRectangleMode,
-        }))
+        if (this.state == undefined)
+        {
+          return;
+        }
+        this.setState(this.state) // doesn't matter, just need to trigger render
+        // console.log("Keydown", this.state)
         hackyState.mode = DrawRectangleMode
       }
     })
@@ -89,10 +91,12 @@ export class SelectionLayer<DataT, ExtraPropsT> extends CompositeLayer<
     addEventListener('keyup', (ev) => {
       if(ev.key == "r" && !ev.repeat)
       {
-        this.setState(prevState => ({
-          ...prevState,
-          mode: ViewMode,
-        }))
+        if (this.state == undefined)
+        {
+          return;
+        }
+        this.setState(this.state)
+        // console.log("Keyup", this.state)
         hackyState.mode = ViewMode
       }
     })
@@ -103,14 +107,24 @@ export class SelectionLayer<DataT, ExtraPropsT> extends CompositeLayer<
     const { layerIds, onSelect } = this.props;
     const [x1, y1] = this.context.viewport.project(coordinates[0][0]);
     const [x2, y2] = this.context.viewport.project(coordinates[0][2]);
-    const pickingInfos = this.context.deck.pickObjects({
+    const infos = {
       x: Math.min(x1, x2),
       y: Math.min(y1, y2),
       width: Math.abs(x2 - x1),
-      height: Math.abs(y2 - y1)
-    });
-    console.log("Picked Data", pickingInfos)
+      height: Math.abs(y2 - y1),
+      layerIds
+    };
+    const pickingInfos = this.context.deck.pickObjects(infos);
+    console.log("Picked Data", pickingInfos, "Picking Infos", infos)
     onSelect({ pickingInfos });
+    // for some bizarre reason, sometimes the selection does not get all the items highlighted
+    // therefore, I simply run the query again a few milliseconds later
+    setTimeout(() => {
+      const { layerIds, onSelect } = this.props;
+      const pickingInfos = this.context.deck.pickObjects(infos);
+      console.log("2 - Picked Data", pickingInfos, "Picking Infos", infos)
+      onSelect({ pickingInfos });
+    }, 100)
   }
 
   renderLayers() {

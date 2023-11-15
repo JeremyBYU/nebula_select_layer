@@ -7,7 +7,7 @@
  *
  *  pydeck.settings.custom_libraries = [
  *      {
- *          "libraryName": "LabeledGeoJsonLayerLibrary",
+ *          "libraryName": "SelectionLayerLibrary",
  *          "resourceUri": "https://localhost:8080/dist/bundle.js",
  *      }
  *   ]
